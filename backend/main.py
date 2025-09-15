@@ -18,8 +18,8 @@ app.add_middleware(
     allow_headers=["*"],        # allow all headers
 )
 
-app.include_router(advisory.router)
+app.include_router(advisory.router, prefix="/api")
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("main:app", host="localhost", port=8000, reload=True)

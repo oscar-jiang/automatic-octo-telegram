@@ -105,9 +105,30 @@ def current_advice(data):
 def generate_advice(lat: float, lon: float, crop: str):
     data = get_weather_data(lat, lon)
 
+    current = data.get("current", {})
+    current_weather = {
+        "temp": current.get("temp"),
+        "humidity": current.get("humidity"),
+        "weather_icon": current.get("weather", [{}])[0].get("icon"),
+        "weather_name": current.get("weather", [{}])[0].get("main"),
+        "dt": current.get("dt"),
+    }
+
+    hourly_weather = []
+    for hour in data.get("hourly", [])[:8]:
+        hourly_weather.append({
+            "temp": hour.get("temp"),
+            "humidity": hour.get("humidity"),
+            "weather_icon": hour.get("weather", [{}])[0].get("icon"),
+            "weather_name": hour.get("weather", [{}])[0].get("main"),
+            "dt": hour.get("dt"),
+        })
+
     return {
         "crop": crop,
         "location": {"lat": lat, "lon": lon},
+        "current_weather": current_weather,
+        "hourly_weather": hourly_weather,
         "current_advice": current_advice(data),
         "general_hour_forecast_advice": holistic_hourly_forecast_advice(data, 8) # hours cannot be 0
     }
